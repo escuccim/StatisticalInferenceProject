@@ -7,6 +7,7 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
 ```
 
 ## Overview
@@ -18,10 +19,84 @@ Now in the second portion of the project, I will analyze the ToothGrowth data in
 
 ## Loading the data
 
-The data is part of the R datasets. We will load it and convert the dose to a factor for ease of grouping the data by dose.
+The data is part of the R datasets. We will load it and convert the dose to a factor for ease of grouping the data by dose, in the interest of more readable plots I will also change the levels of the supplement factor.
 
 ```{r loaddata}
 library(datasets)
 data(ToothGrowth)
 ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+levels(ToothGrowth$supp) <- c("Orange Juice","Vitamin C")
 ```
+
+## Summary of Data
+```{r datasummary}
+summary(ToothGrowth)
+```
+
+
+
+Let's look at some boxplots of the length by supplement and by dose.
+
+```{r boxplots}
+par(mfrow=c(1,2))
+boxplot(ToothGrowth$len ~ ToothGrowth$supp,col=c("red","green"))
+title(main="Length by Supplement", xlab="Supplement",ylab="Length")
+boxplot(ToothGrowth$len ~ ToothGrowth$dose, col=c("yellow","orange","red"),xlab="Dose",ylab="Length")
+title(main="Length by Dose")
+```
+
+The Length by Dose plot above indicates that there is a clear relationship between the dose of the supplement and the length. The Length by Supplement suggests a relationship, however it seems to be much less clear as the medians of each are contained within the 1st to 3rd quartiles of the other.
+
+Let's take a closer look at the breakdown of the length data:
+```{r detailplots}
+ggplot(ToothGrowth, aes(x=dose,y=len)) + geom_boxplot(aes(fill=supp)) + labs(title="Length by Dose, by supplement",x="Dose",y="Length")
+
+```
+
+It appears that at a dose of 2 the two supplements are equally effective, although Vitamin C has a greater variance than Orange Juice. At lower doses Orange Juice appears to be more effective than Vitamin C. 
+
+## Confidence Testing of Growth by Supplement and Dose
+
+Based on the plots above I will test the null hypotheses that the two supplements provide equal growth at each of the three dosage levels.
+
+### Hypthosesis 1
+
+Null Hypothesis 1 is that the two supplements provide equivalent growth at a dose of 0.5. 
+
+```{r hyp01}
+lowdose <- subset(ToothGrowth, dose == 0.5)
+conf <- t.test(len ~ supp, data=lowdose)
+conf$conf.int
+```
+
+The confidence interval does not include 0, the test indicates that the difference in means is not equal to 0 with 95% confidence. The p value of `r conf$p.value` indicates that we can reject the null hypothesis and conclude that Orange Juice does provide greater growth at a dose of 0.5mg/day.
+
+### Hypothesis 2
+
+Null Hypothesis 2 is that the two supplements provide equivalent growth at a dose of 1.0mg/day.
+
+```{r hyp02}
+middose <- subset(ToothGrowth, dose == 1)
+conf2 <- t.test(len ~ supp, data=middose)
+conf2$conf.int
+```
+
+Again, the confidence interval does not include 0 with a confidence level of 95%. The p-value of `r conf2$p.value` is lower than the threshhold of 0.05, so we can also reject this hypothesis and conclude that Orange Juice also provides greater growth at a dose of 1mg/day.
+
+### Hypothesis 3
+
+Null Hypothesis 3 is that the two supplements provide equivalent growth at a dose of 2.0 mg/day.
+
+```{r hyp03}
+highdose <- subset(ToothGrowth, dose == 2)
+conf3 <- t.test(len ~ supp, data=highdose)
+conf3$conf.int
+```
+
+For this hypothesis the confidence level does include 0, in fact it seems to center around 0, with 95% confidence. The p value of `r conf$p.value` is almost double our threshhold. We can not reject this hypothesis so conclude that at a dose of 2.0mg/day Orange Juice and Vitamin C provide equivalent benefits to tooth growth.
+
+## Conclusions
+
+Based on the T tests, I must conclude that Orange Juice is more effective at improving tooth growth than Vitamin C at doses of 0.5mg/day and 1mg/day. At a dose of 2.0mg/day there does not appear to be a significant difference between the two supplements.
+
+This analysis assumes that the tooth lengths have a normal distribution, which may be a questionable assumption given the high variability of the data.

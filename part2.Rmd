@@ -1,0 +1,27 @@
+---
+title: "Statistical Inference Course Project Part 2"
+author: "Eric Scuccimarra"
+date: "4 January 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview
+
+Now in the second portion of the project, I will analyze the ToothGrowth data in the R datasets package. I will:
+
+1. Provide a basic summary of the data
+2. Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose.
+
+## Loading the data
+
+The data is part of the R datasets. We will load it and convert the dose to a factor for ease of grouping the data by dose.
+
+```{r loaddata}
+library(datasets)
+data(ToothGrowth)
+ToothGrowth$dose <- as.factor(ToothGrowth$dose)
+```

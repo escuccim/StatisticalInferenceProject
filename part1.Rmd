@@ -2,7 +2,10 @@
 title: "Statistical Inference Course Project 1"
 author: "Eric Scuccimarra"
 date: "4 January 2018"
-output: pdf_document
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -28,7 +31,7 @@ means <- apply(data,1,mean)
 
 ## Sample Mean
 
-The theoretical mean is 1/lambda, or 5. Looking at this plot of distribution of means we see that the distribution is centered around 5 and appears to be normally distributed.
+The theoretical mean is $1/\lambda$, or 5. Looking at this plot of distribution of means we see that the distribution is centered around 5 and appears to be normally distributed.
 
 ```{r plotdata}
 hist(means,col="steelblue")
@@ -60,7 +63,7 @@ The actual variance of the sample means is `r sample_var` which is relatively cl
 
 ## Distribution
 
-In the histogram above we see that the distribution appears roughly normal, let's take a closer look at the distribution:
+In the histogram above we see that the distribution appears roughly normal, let's take a closer look at the distribution by comparing it to a normal distribution.
 
 ```{r distribution}
 hist(means,col="steelblue",freq=FALSE)
@@ -69,6 +72,7 @@ abline(v=sampleMean,lwd=3,col="red")
 normal <- rnorm(10000,mean(means),sd(means))
 curve(dnorm(x, mean=mean(means), sd=sd(means)), add=TRUE,col="blue",lwd=2)
 abline(v=5,lwd=2,col="blue")
+legend("topright",legend=c("Sample","Normal"),col=c("red","blue"),lwd=2)
 ```
 
 The blue curve is a normal distribution, with the blue vertical line at the mean. The red curve is a density curve of the sample data with the red vertical line at the sample mean. We have already seen that the means are close, the distribution of the actual data appears to overlap with the normal distribution, leading me to conclude that the sample distribution is also approximately normal.

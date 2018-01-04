@@ -2,7 +2,10 @@
 title: "Statistical Inference Course Project Part 2"
 author: "Eric Scuccimarra"
 date: "4 January 2018"
-output: pdf_document
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -93,7 +96,7 @@ conf3 <- t.test(len ~ supp, data=highdose)
 conf3$conf.int
 ```
 
-For this hypothesis the confidence level does include 0, in fact it seems to center around 0, with 95% confidence. The p value of `r conf$p.value` is almost double our threshhold. We can not reject this hypothesis so conclude that at a dose of 2.0mg/day Orange Juice and Vitamin C provide equivalent benefits to tooth growth.
+For this hypothesis the confidence level does include 0, in fact it seems to center around 0, with 95% confidence. The p value is `r conf3$p.value` which indicates that we can not reject this hypothesis and conclude that at a dose of 2.0mg/day Orange Juice and Vitamin C provide equivalent benefits to tooth growth.
 
 ## Conclusions
 
